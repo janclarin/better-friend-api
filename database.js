@@ -146,8 +146,8 @@ function setUserBirthday(facebookUid, birthday, callback) {
   });
 }
 
-this.saveNewUser = saveNewUser;
-this.findUser = findUser;
-this.findOrCreateUser = findOrCreateUser;
-this.getAuthTokenForUser = getAuthTokenForUser;
-this.setUserBirthday = setUserBirthday;
+exports.saveNewUser = saveNewUser;
+exports.findUser = findUser;
+exports.findOrCreateUser = findOrCreateUser;
+exports.getAuthTokenForUser = getAuthTokenForUser;
+exports.setUserBirthday = setUserBirthday;
