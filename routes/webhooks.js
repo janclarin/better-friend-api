@@ -68,15 +68,11 @@ router.post('/facebook/pages', (req, res) => {
   let pageId = entry.id;
   let changedField = entry.changes.field;
 
-  console.log('pages stuff');
-  console.log(req.body);
-  console.log(entry);
-
   // Add received webhook entry to list.
   lastReceivedUpdatesPages.push(req.body);
 
   if (changedField === 'feed') {
-    replyToUserLastFeedItem(pageId, getRandomBusinessResponse());
+    replyToPageLastFeedItem(pageId);
   }
 
   res.sendStatus(200);
@@ -169,6 +165,44 @@ function replyToUserLastFeedItem(userId, randomResponse) {
         });
       }
     });
+  });
+}
+
+function replyToPageLastFeedItem(pageId) {
+  // From page id get owner access token.
+  const sandraUserId = '112064199317537';
+  database.findUser(sandraUserId, (err, res) => {
+    const pageOwnerAccessToken = res.accessToken;
+    graphApi.getLastFeedItemId(pageId, pageOwnerAccessToken, (err, feedItemId) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      console.log("Last feed item " + feedItemId);
+
+      if (!wasRepliedTo(feedItemId)) {
+        // Get last feed item to check if birthday message.
+        graphApi.getFeedItem(feedItemId, accessToken, (err, feedItem) => {
+          if (err) {
+            console.log(err);
+            return;
+          }
+
+          // Add feed item to replied to list.
+          addToLastRepliedToFeedIds(feedItemId);
+
+          const responseMessage = getRandomBusinessResponse();
+          graphApi.commentOnFeedItem(feedItemId, accessToken, responseMessage, (err, commentId) => {
+            if (err) {
+              console.log(err);
+              return;
+            }
+            console.log("Auto-commented on page feed item " + feedItemId);
+          });
+        });
+      }
+    });
+
   });
 }
 
