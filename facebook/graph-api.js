@@ -10,19 +10,8 @@ function getBirthday(userId, userAccessToken, callback) {
 }
 
 function getFeedItem(feedItemId, userAccessToken, callback) {
-  fbgraph.get(feedItemId + '?access_token=' + userAccessToken, (err, res) => {
+  fbgraph.get(feedItemId + '?fields=from,message&access_token=' + userAccessToken, (err, res) => {
     callback(err, res);
-  });
-}
-
-function getFeedItemUserName(feedItemId, userAccessToken, callback) {
-  const userId = feedItemId.split('_')[0];
-  fbgraph.get(userId + '?access_token=' + userAccessToken, (err, res) => {
-    if (err) {
-      console.log(err);
-      return;
-    }
-    callback(err, res.name);
   });
 }
 
@@ -44,6 +33,5 @@ function commentOnFeedItem(feedItemId, userAccessToken, comment, callback) {
 
 exports.getBirthday = getBirthday;
 exports.getFeedItem = getFeedItem;
-exports.getFeedItemUserName = getFeedItemUserName;
 exports.getLastFeedItemId = getLastFeedItemId;
 exports.commentOnFeedItem = commentOnFeedItem;
