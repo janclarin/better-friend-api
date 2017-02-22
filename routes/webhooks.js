@@ -86,6 +86,20 @@ function shouldAutoReplyToFeed(userId, callback) {
   });
 }
 
+function shouldIncludeEmoji(userID, callback) {
+  database.findUser(userId, (err, res) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    if (res.length == 0) {
+      return callback(err, false)
+    }
+    const birthdaySettings = res[0].birthdaySettings;
+    callback(err, birthdaySettings.useEmoji);
+  });
+}
+
 function getRandomUserResponse() {
   const responses = [
     'Cool story!', 'Neat!', 'Lol, so true.', 'Thanks for sharing!',
@@ -119,6 +133,15 @@ function wasRepliedTo(feedId) {
   return lastRepliedToFeedIds.indexOf(feedId) > -1;
 }
 
+function randomEmoji(){
+  const responses = [
+  ':)', '<3', ';)', ':P',
+  'XD', ':O'
+  ];
+  return responses[Math.floor(Math.random() * responses.length)];
+}
+
+
 function replyToUserLastFeedItem(userId, randomResponse) {
   database.getAuthTokenForUser(userId, (err, accessToken) => {
     if (err) {
@@ -148,16 +171,19 @@ function replyToUserLastFeedItem(userId, randomResponse) {
 
           const feedItemUserFirstName = feedItem.from.name.split(' ')[0];
           const feedItemMessage = feedItem.message;
-          const responseMessage = isHappyBirthdayMessage(feedItemMessage)
-            ? 'Thank you, ' + feedItemUserFirstName + '!'
-            : randomResponse;
 
-          graphApi.commentOnFeedItem(feedItemId, accessToken, responseMessage, (err, commentId) => {
-            if (err) {
-              console.log(err);
-              return;
-            }
-            console.log("Auto-commented on feed item " + feedItemId);
+          shouldIncludeEmoji(userId, (err, includeEmoji) =>{
+            const responseMessage = isHappyBirthdayMessage(feedItemMessage)
+              ? 'Thank you, ' + feedItemUserFirstName + '! ' + (includeEmoji ? randomEmoji(): "")
+              : randomResponse;
+
+            graphApi.commentOnFeedItem(feedItemId, accessToken, responseMessage, (err, commentId) => {
+              if (err) {
+                console.log(err);
+                return;
+              }
+              console.log("Auto-commented on feed item " + feedItemId);
+            });
           });
         });
       }
