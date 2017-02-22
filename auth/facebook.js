@@ -7,7 +7,7 @@ const database = require("../database.js");
 const facebookAppInfo = require('../facebook/app-info');
 const facebookAppId = facebookAppInfo.appId;
 const facebookAppSecret = facebookAppInfo.appSecret;
-const facebookCallbackUrl = facebookAppInfo.callUrl;
+const facebookCallbackUrl = facebookAppInfo.callbackUrl;
 
 // Configure passport.
 passport.use(new FacebookStrategy({
