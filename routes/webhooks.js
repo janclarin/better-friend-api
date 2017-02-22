@@ -82,15 +82,21 @@ function replyToUserLastFeedItem(userId) {
           // Add feed item to replied to list.
           addToLastRepliedToFeedIds(feedItemId);
 
-          const feedItemMessage = feedItem.message;
-          const responseMessage = isHappyBirthdayMessage(feedItemMessage) ? 'Thank you!' : 'Cool story!';
+          // Get feed item user name.
+          graphApi.getFeedItemUserName(feedItemId, accessToken, (err, userName) => {
+            const feedItemUserFirstName = userName.split(' ')[0];
+            const feedItemMessage = feedItem.message;
+            const responseMessage = isHappyBirthdayMessage(feedItemMessage)
+              ? 'Thank you, ' + feedItemUserFirstName + '!'
+              : 'Cool story!';
 
-          graphApi.commentOnFeedItem(feedItemId, accessToken, responseMessage, (err, commentId) => {
-            if (err) {
-              console.log(err);
-              return;
-            }
-            console.log("Auto-commented on feed item " + feedItemId);
+            graphApi.commentOnFeedItem(feedItemId, accessToken, responseMessage, (err, commentId) => {
+              if (err) {
+                console.log(err);
+                return;
+              }
+              console.log("Auto-commented on feed item " + feedItemId);
+            });
           });
         });
       }
