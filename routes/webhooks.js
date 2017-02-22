@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const database = require('../database');
+const graphApi = require('../facebook/graph-api');
 
 let lastReceivedUpdates = [];
 
@@ -21,6 +23,15 @@ router.get('/facebook', (req, res) => {
 });
 
 router.post('/facebook', (req, res) => {
+  let userId = req.body['entry.id'];
+  let commentMessage = 'Very nice!';
+
+  database.getTokenForAuthUser(userId, (accessToken) => {
+    graphApi.getLastFeedItemId(userId, accessToken, (feedItemId) => {
+      graphApi.commentOnFeedItem(feedItemId, accessToken, commentMessage, (commentId) => {});
+    });
+  });
+
   // do stuff with the update
   lastReceivedUpdates.push(req.body);
   res.sendStatus(200);
