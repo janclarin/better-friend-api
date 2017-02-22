@@ -10,6 +10,7 @@ function getBirthday(userId, userAccessToken, callback) {
 }
 
 function getLastFeedItemId(userId, userAccessToken, callback) {
+  console.log("Getting last feed item with access token: " + userAccessToken);
   fbgraph.get(userId + '/feed?limit=1&access_token=' + userAccessToken, (err, res) => {
     console.log(res);
     callback(res.data['data'][0].id);
