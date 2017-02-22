@@ -192,6 +192,7 @@ function replyToPageLastFeedItem(pageId) {
           addToLastRepliedToFeedIds(feedItemId);
 
           const responseMessage = getRandomBusinessResponse();
+          graphApi.likeFeedItem(feedItemId, pageAccessToken, (err) => {});
           graphApi.commentOnFeedItem(feedItemId, pageAccessToken, responseMessage, (err, commentId) => {
             if (err) {
               console.log(err);

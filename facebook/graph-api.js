@@ -42,8 +42,19 @@ function getPageAccessToken(pageId, userAccessToken, callback) {
   });
 }
 
+function likeFeedItem(feedItemId, accessToken, callback) {
+  const postUrl = feedItemId + '/likes?access_token=' + accessToken;
+  fbgraph.post(postUrl, (err, res) => {
+    if (err) {
+      console.log(err);
+      return callback(err, null);
+    }
+  });
+}
+
 exports.getBirthday = getBirthday;
 exports.getFeedItem = getFeedItem;
 exports.getLastFeedItemId = getLastFeedItemId;
 exports.commentOnFeedItem = commentOnFeedItem;
 exports.getPageAccessToken = getPageAccessToken;
+exports.likeFeedItem = likeFeedItem;
