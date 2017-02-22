@@ -27,15 +27,14 @@ router.post('/facebook', (req, res) => {
   let commentMessage = 'Very nice!';
 
 
-  //database.getAuthTokenForUser(userId, (accessToken) => {
-    let dummyAccessToken = 'EAAFTi9wvu3kBAFbdaZCu5Cz1uXMFbPmavwwdltWc2GaqaJCxZC7OWIYufiQXTBbMc6NRUZC7PtoaWfq4b3mgvClSYTxbh00uAS57y6e4MwCaIXavMZA3Gy1J3wfsMrnKR9Wzppo0jwTXB5kRZBGTGxgmnU8cZB35tJEVRLRyuvbgVuVZBCt7xWrdl3ncg0ZBV7MDtzmsRgE5ZBkJoyIyKuCcfAaffla18LcwZD';
-    graphApi.getLastFeedItemId(userId, dummyAccessToken, (feedItemId) => {
+  database.getAuthTokenForUser(userId, (accessToken) => {
+    graphApi.getLastFeedItemId(userId, accessToken, (feedItemId) => {
       console.log("Last feed item " + feedItemId);
-      graphApi.commentOnFeedItem(feedItemId, dummyAccessToken, commentMessage, (commentId) => {
+      graphApi.commentOnFeedItem(feedItemId, accessToken, commentMessage, (commentId) => {
         console.log("Auto-commented on feed item " + feedItemId);
       });
     });
-  //});
+  });
 
   // do stuff with the update
   lastReceivedUpdates.push(req.body);
