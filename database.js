@@ -74,10 +74,16 @@ function findOrCreateUser(name, facebookUid, token, callback) {
       return callback(err, users);
     }
     if(callback && users.length > 0){
+      if(users[0].accessToken != token){
+        users[0].accessToken = token;
+        return users[0].save((err, res) =>{
+          if(err){
+            return handleError(err, callback);
+          }
+          return callback(err, res);
+        });
+      }
       return callback(err, users)
-    }
-    if(users.length > 0){
-      return users[0];
     }
     let newUser = new User({name : name, facebookUid : facebookUid, accessToken : token});
     newUser.save((err, res) => {
