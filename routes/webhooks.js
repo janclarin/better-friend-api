@@ -23,7 +23,7 @@ router.get('/facebook', (req, res) => {
 });
 
 router.post('/facebook', (req, res) => {
-  console.log(req.body);
+  console.log(req.body.entry);
   let userId = req.body.entry[0].id;
   let commentMessage = 'Very nice!';
 
