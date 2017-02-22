@@ -11,12 +11,18 @@ let birthdaySchema = mongoose.Schema({
   useEmoji : {type : Boolean, required : true, default : false}
 });
 
+let eventSchema = mongoose.Schema({
+  isEnabled : {type : Boolean, required : true, default : false},
+  makeExcuse : {type : Boolean, required : true, default : false}
+});
+
 let userSchema = mongoose.Schema({
   name: {type : String, required : true},
   facebookUid : {type : String, unique : true, dropDups : true, required : true },
   accessToken: {type : String, required : true},
   birthday : {type : String},
-  birthdaySettings : {type : birthdaySchema, default : birthdaySchema, required : true}
+  birthdaySettings : {type : birthdaySchema, default : birthdaySchema, required : true},
+  eventSettings : {type : eventSchema, default : eventSchema, required : true}
 });
 
 let User = mongoose.model('User', userSchema);
