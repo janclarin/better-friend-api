@@ -2,29 +2,29 @@ const fbgraph = require('fbgraph');
 fbgraph.setVersion('2.8');
 
 // Pass a function as callback, e.g. function(birthday).
-function getBirthday(userId, userAccessToken, callback) {
-  const requestUrl = userId + '?fields=birthday&access_token=' + userAccessToken;
+function getBirthday(userId, accessToken, callback) {
+  const requestUrl = userId + '?fields=birthday&access_token=' + accessToken;
   fbgraph.get(requestUrl, (err, res) => {
     callback(res.birthday);
   });
 }
 
-function getFeedItem(feedItemId, userAccessToken, callback) {
-  fbgraph.get(feedItemId + '?fields=from,message&access_token=' + userAccessToken, (err, res) => {
+function getFeedItem(feedItemId, accessToken, callback) {
+  fbgraph.get(feedItemId + '?fields=from,message&access_token=' + accessToken, (err, res) => {
     callback(err, res);
   });
 }
 
-function getLastFeedItemId(userId, userAccessToken, callback) {
-  console.log("Getting last feed item with access token: " + userAccessToken);
-  fbgraph.get(userId + '/feed?limit=1&access_token=' + userAccessToken, (err, res) => {
+function getLastFeedItemId(userId, accessToken, callback) {
+  console.log("Getting last feed item with access token: " + accessToken);
+  fbgraph.get(userId + '/feed?limit=1&access_token=' + accessToken, (err, res) => {
     const lastFeedItemId = res.data[0].id;
     callback(err, lastFeedItemId);
   });
 }
 
-function commentOnFeedItem(feedItemId, userAccessToken, comment, callback) {
-  const postUrl = feedItemId + '/comments?access_token=' + userAccessToken + '&message=' + comment;
+function commentOnFeedItem(feedItemId, accessToken, comment, callback) {
+  const postUrl = feedItemId + '/comments?access_token=' + accessToken + '&message=' + comment;
   fbgraph.post(postUrl, (err, res) => {
     if (err){
       console.log(err);

@@ -11,6 +11,7 @@ router.get('/check', (req, res) => {
   res.send(JSON.stringify(lastReceivedUpdates, null, 2));
 });
 
+// User page webhooks.
 router.get('/facebook', (req, res) => {
   if (
     req.query['hub.mode'] === 'subscribe' &&
@@ -35,9 +36,37 @@ router.post('/facebook', (req, res) => {
   if (changedFields.indexOf('feed') > -1) {
     shouldAutoReplyToFeed(userId, (err, shouldAutoReply) => {
       if (shouldAutoReply) {
-        replyToUserLastFeedItem(userId);
+        replyToUserLastFeedItem(userId, getRandomUserResponse());
       }
     });
+  }
+
+  res.sendStatus(200);
+});
+
+// Business page webhooks.
+router.get('/facebook/pages', (req, res) => {
+  if (
+    req.query['hub.mode'] === 'subscribe' &&
+    req.query['hub.verify_token'] === 'token'
+  ) {
+    res.send(req.query['hub.challenge']);
+  }
+  else {
+    res.sendStatus(400);
+  }
+});
+
+router.post('/facebook/pages', (req, res) => {
+  let entry = req.body.entry[0];
+  let pageId = entry.id;
+  let changedFields = entry.changed_fields;
+
+  // Add received webhook entry to list.
+  lastReceivedUpdates.push(req.body);
+
+  if (changedFields.indexOf('feed') > -1) {
+    replyToUserLastFeedItem(pageId, getRandomBusinessResponse());
   }
 
   res.sendStatus(200);
@@ -53,15 +82,23 @@ function shouldAutoReplyToFeed(userId, callback) {
       return callback(err, false)
     }
     const birthdaySettings = res[0].birthdaySettings;
-    console.log('bday:' + birthdaySettings);
     callback(err, birthdaySettings.isEnabled);
   });
 }
 
-function getRandomResponse() {
+function getRandomUserResponse() {
   const responses = [
     'Cool story!', 'Neat!', 'Lol, so true.', 'Thanks for sharing!',
-    'Wow, I was just about to send to you!', 'That is SO cool!'
+    'Wow, I was just about to send to you!', 'That is SO cool!', 'Cool beans!'
+  ];
+  return responses[Math.floor(Math.random() * responses.length)];
+}
+
+function getRandomBusinessResponse() {
+  const responses = [
+    'Thank you for your kind words.', 'Please message us directly for assistance.',
+    'We will be releasing new ones soon!', 'Thanks for sharing.', 'Thank you for your support.',
+    'We will do our best to get back to you on that.', 'Your business is important to us.'
   ];
   return responses[Math.floor(Math.random() * responses.length)];
 }
@@ -82,7 +119,7 @@ function wasRepliedTo(feedId) {
   return lastRepliedToFeedIds.indexOf(feedId) > -1;
 }
 
-function replyToUserLastFeedItem(userId) {
+function replyToUserLastFeedItem(userId, randomResponse) {
   database.getAuthTokenForUser(userId, (err, accessToken) => {
     if (err) {
       console.log(err);
@@ -113,7 +150,7 @@ function replyToUserLastFeedItem(userId) {
           const feedItemMessage = feedItem.message;
           const responseMessage = isHappyBirthdayMessage(feedItemMessage)
             ? 'Thank you, ' + feedItemUserFirstName + '!'
-            : getRandomResponse() + " " ;
+            : randomResponse;
 
           graphApi.commentOnFeedItem(feedItemId, accessToken, responseMessage, (err, commentId) => {
             if (err) {
