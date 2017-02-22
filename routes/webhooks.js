@@ -66,7 +66,9 @@ router.get('/facebook/pages', (req, res) => {
 router.post('/facebook/pages', (req, res) => {
   let entry = req.body.entry[0];
   let pageId = entry.id;
-  let changedField = entry.changes.field;
+  console.log('fdasdfasdfadsf');
+  let changedField = entry.changes[0].field;
+  console.log(changedField);
 
   // Add received webhook entry to list.
   lastReceivedUpdatesPages.push(req.body);
@@ -183,27 +185,19 @@ function replyToPageLastFeedItem(pageId) {
           console.log(err);
           return;
         }
-        console.log("Last feed item " + feedItemId);
+        console.log("Last page feed item " + feedItemId);
 
         if (!wasRepliedTo(feedItemId)) {
-          // Get last feed item to check if birthday message.
-          graphApi.getFeedItem(feedItemId, pageAccessToken, (err, feedItem) => {
+          // Add feed item to replied to list.
+          addToLastRepliedToFeedIds(feedItemId);
+
+          const responseMessage = getRandomBusinessResponse();
+          graphApi.commentOnFeedItem(feedItemId, pageAccessToken, responseMessage, (err, commentId) => {
             if (err) {
               console.log(err);
               return;
             }
-
-            // Add feed item to replied to list.
-            addToLastRepliedToFeedIds(feedItemId);
-
-            const responseMessage = getRandomBusinessResponse();
-            graphApi.commentOnFeedItem(feedItemId, pageAccessToken, responseMessage, (err, commentId) => {
-              if (err) {
-                console.log(err);
-                return;
-              }
-              console.log("Auto-commented on page feed item " + feedItemId);
-            });
+            console.log("Auto-commented on page feed item " + feedItemId);
           });
         }
       });
