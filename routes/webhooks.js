@@ -84,7 +84,6 @@ function replyToUserLastFeedItem(userId) {
 
           const feedItemMessage = feedItem.message;
           const responseMessage = isHappyBirthdayMessage(feedItemMessage) ? 'Thank you!' : 'Cool story!';
-          console.log(feedItemMessage);
 
           graphApi.commentOnFeedItem(feedItemId, accessToken, responseMessage, (err, commentId) => {
             if (err) {
