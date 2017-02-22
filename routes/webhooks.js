@@ -24,7 +24,7 @@ router.get('/facebook', (req, res) => {
 
 router.post('/facebook', (req, res) => {
   console.log(req.body);
-  let userId = req.body.entry.id;
+  let userId = req.body.entry[0].id;
   let commentMessage = 'Very nice!';
 
   database.getAuthTokenForUser(userId, (accessToken) => {
