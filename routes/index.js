@@ -1,6 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const passportFacebook = require('../auth/facebook');
+const path = require('path');
+
+router.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../index.html'));
+});
 
 router.get('/auth/facebook', passportFacebook.authenticate('facebook', {
   scope: [
