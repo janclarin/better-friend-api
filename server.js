@@ -13,6 +13,7 @@ app.get('/', (req, res) => {
 
 app.get('/facebook', (req, res) => {
   if (
+    req.query.hub &&
     req.query.hub.mode === 'subscribe' &&
     req.query.hub.verify_token === 'token'
   ) {
