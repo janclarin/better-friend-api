@@ -5,9 +5,9 @@ const router = express.Router();
 const database = require("../database.js");
 
 // Facebook app info.
-const facebookAppId = '373335136385913';
-const facebookAppSecret = 'c9cb9e46a67253fa8988d1cbd6fc04ce';
-const facebookCallbackUrl = 'http://localhost:3000/auth/facebook/callback';
+const facebookAppId = process.env.FB_APP_ID || '373335136385913';
+const facebookAppSecret = process.env.FB_APP_SECRET || 'c9cb9e46a67253fa8988d1cbd6fc04ce';
+const facebookCallbackUrl = process.env.FB_CALLBACK_URL || 'http://localhost:3000/auth/facebook/callback';
 
 // Configure passport.
 passport.use(new FacebookStrategy({
@@ -23,7 +23,6 @@ passport.use(new FacebookStrategy({
 
       return callback(err, profile)
     });
-
   }
 ));
 
