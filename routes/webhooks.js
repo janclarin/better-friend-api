@@ -31,13 +31,24 @@ router.post('/facebook', (req, res) => {
   // Add received webhook entry to list.
   lastReceivedUpdates.push(req.body);
 
-  // Auto-comment if it was a feed update.
+  // Auto-comment if it was a feed update and if they should reply.
   if (changedFields.indexOf('feed') > -1) {
-    replyToUserLastFeedItem(userId);
+    shouldAutoReplyToFeed(userId, (err, shouldAutoReply) => {
+      if (shouldAutoReply) {
+        replyToUserLastFeedItem(userId);
+      }
+    });
   }
 
   res.sendStatus(200);
 });
+
+function shouldAutoReplyToFeed(userId, callback) {
+  database.findUser(userId, (err, res) => {
+    const birthdaySettings = res.birthdaySettings;
+    callback(err, birthdaySettings.isEnabled);
+  });
+}
 
 function isHappyBirthdayMessage(message) {
   const lowerCasedMessage = message.toLowerCase();
