@@ -23,8 +23,13 @@ router.get('/facebook', (req, res) => {
 });
 
 router.post('/facebook', (req, res) => {
-  let userId = req.body.entry[0].id;
+  let entry = req.body.entry[0];
+  let userId = entry.id;
+  let changedFields = entry.changed_fields;
   let commentMessage = 'Very nice!';
+
+  console.log(changedFields);
+  return;
 
   database.getAuthTokenForUser(userId, (err, accessToken) => {
     console.log("Access token: " + accessToken);
