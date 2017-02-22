@@ -6,7 +6,7 @@ const router = express.Router();
 // Facebook app info.
 const facebookAppId = '373335136385913';
 const facebookAppSecret = 'c9cb9e46a67253fa8988d1cbd6fc04ce';
-const facebookCallbackUrl = 'http://localhost:3000/auth/facebook/callback';
+const facebookCallbackUrl = 'https://fb-auto-api.herokuapp.com/auth/facebook/callback';
 
 // Configure passport.
 passport.use(new FacebookStrategy({
