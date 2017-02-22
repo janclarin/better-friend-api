@@ -2,26 +2,29 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 
+let receivedUpdates = 0;
+
 app.get('/', (req, res) => {
-  console.log(req);
   res.send('hello world test');
 });
 
 app.get('/facebook', (req, res) => {
   if (
-    req.param('hub.mode') === 'subscribe' &&
-    req.param('hub.verify_token') === "token"
+    req.query.hub.mode === 'subscribe' &&
+    req.query.hub.verify_token === 'token'
   ) {
-    res.send(req.param('hub.challenge'));
+    res.sendStatus(req.query.hub.challenge);
   }
   else {
-    res.send(400);
+    res.sendStatus(400);
   }
 });
 
 app.post('/facebook', (req, res) => {
-  console.log(req.body);
-  res.send(200);
+  // do stuff with the update
+  receivedUpdates += 1;
+  console.log(receivedUpdates);
+  res.sendStatus(200);
 });
 
 // Start the server.
