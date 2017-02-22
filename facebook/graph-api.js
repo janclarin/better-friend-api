@@ -11,7 +11,8 @@ function getBirthday(userId, userAccessToken, callback) {
 
 function getLastFeedItemId(userId, userAccessToken, callback) {
   fbgraph.get(userId + '/feed?limit=1&access_token=' + userAccessToken, (err, res) => {
-    callback(res.data[0].id);
+    console.log(res);
+    callback(res.data['data'][0].id);
   });
 }
 
