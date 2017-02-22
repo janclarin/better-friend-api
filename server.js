@@ -6,6 +6,7 @@ const passport = require('passport');
 const app = express();
 const routes = require('./routes/index');
 const dialogRoutes = require('./routes/dialog');
+const queryRoutes = require('./routes/queries');
 const webhookRoutes = require('./routes/webhooks');
 const port = process.env.PORT || 3000;
 const database = require("./database");
@@ -19,6 +20,8 @@ app.use(passport.initialize());
 app.use('/', routes);
 app.use('/dialog', dialogRoutes);
 app.use('/webhooks', webhookRoutes);
+
+app.use('/query/', queryRoutes);
 
 // Start the server.
 app.listen(port, () => {

@@ -24,7 +24,7 @@ router.get('/auth/facebook/callback',
   passportFacebook.authenticate('facebook', { failureRedirect: '/bad' , session :  false}),
   (req, res) => {
     // Successfully authenticated.
-    res.redirect('/');
+    res.status(200).redirect('https://www.google.ca');
   }
 );
 
