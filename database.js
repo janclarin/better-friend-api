@@ -1,13 +1,13 @@
 "use strict";
-const DATABASE_LOC = 'mongodb://localhost:9801';
+const DATABASE_LOC = 'mongodb://heroku_5b8z7gld:h1h9h3h8bquori1ost3qaeqhn4@ds157469.mlab.com:57469/heroku_5b8z7gld';
 const mongoose = require('mongoose');
 
 mongoose.connect(DATABASE_LOC);
 
 let userSchema = mongoose.Schema({
-  name: String,
-  facebookUid : String,
-  token: String
+  name: {type : String, required : true},
+  facebookUid : {type : String, unique : true, dropDups : true, required : true },
+  token: {type : String, required : true}
 });
 
 let User = mongoose.model('User', userSchema);
@@ -44,7 +44,14 @@ function saveNewUser(name, facebookUid, token, callback) {
 }
 
 function retreiveUser(facebookUid, callback) {
-  User.find({facebookUid : facebookUid}, (err, res) => callback(err, res));
+  User.find({facebookUid : facebookUid}, (err, res) => {
+    if(callback){
+      callback(err, res);
+    } else {
+      return res;
+    }
+  });
+
 }
 
 
