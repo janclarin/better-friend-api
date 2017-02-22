@@ -49,7 +49,7 @@ function shouldAutoReplyToFeed(userId, callback) {
       console.log(err);
       return;
     }
-    const birthdaySettings = res.birthdaySettings;
+    const birthdaySettings = res[0].birthdaySettings;
     console.log('bday:' + birthdaySettings);
     callback(err, birthdaySettings.isEnabled);
   });
