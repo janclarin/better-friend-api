@@ -6,6 +6,7 @@ const passport = require('passport');
 const FacebookStrategy = require('passport').Strategy;
 const app = express();
 const routes = require('./routes/index');
+const queryRoutes = require('./routes/queries');
 const port = process.env.PORT || 3000;
 const database = require("./database");
 
@@ -17,6 +18,8 @@ app.use(passport.initialize());
 
 // Set up routes.
 app.use('/', routes);
+
+app.use('/query/', queryRoutes);
 
 // Start the server.
 app.listen(port, () => {

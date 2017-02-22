@@ -22,7 +22,7 @@ connection.once('open', () => {
 
 
 function saveNewUser(name, facebookUid, token, callback) {
-  retreiveUser(facebookUid, (err, users) => {
+  findUser(facebookUid, (err, users) => {
     if (err && callback) {
       return callback(err, users);
     }
@@ -43,7 +43,7 @@ function saveNewUser(name, facebookUid, token, callback) {
   });
 }
 
-function retreiveUser(facebookUid, callback) {
+function findUser(facebookUid, callback) {
   User.find({facebookUid : facebookUid}, (err, res) => {
     if(callback){
       callback(err, res);
@@ -55,7 +55,7 @@ function retreiveUser(facebookUid, callback) {
 }
 
 function findOrCreateUser(name, facebookUid, token, callback) {
-  retreiveUser(facebookUid, (err, users) => {
+  findUser(facebookUid, (err, users) => {
     if (err && callback) {
       return callback(err, users);
     }
@@ -74,5 +74,5 @@ function findOrCreateUser(name, facebookUid, token, callback) {
 
 
 this.saveNewUser = saveNewUser;
-this.retreiveUser = retreiveUser;
+this.findUser = findUser;
 this.findOrCreateUser = findOrCreateUser;
