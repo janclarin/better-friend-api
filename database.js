@@ -123,6 +123,7 @@ let handleError = function (err, callback) {
 
 function getAuthTokenForUser(facebookUid, callback) {
    findUser(facebookUid, (err, users) => {
+     console.log('Looking for user with ID: ' + facebookUid);
      if(err || users.length == 0){
        return noUserFound(err, facebookUid, users, callback);
      }
@@ -152,8 +153,8 @@ function setUserBirthday(facebookUid, birthday, callback) {
   });
 }
 
-this.saveNewUser = saveNewUser;
-this.findUser = findUser;
-this.findOrCreateUser = findOrCreateUser;
-this.getAuthTokenForUser = getAuthTokenForUser;
-this.setUserBirthday = setUserBirthday;
+exports.saveNewUser = saveNewUser;
+exports.findUser = findUser;
+exports.findOrCreateUser = findOrCreateUser;
+exports.getAuthTokenForUser = getAuthTokenForUser;
+exports.setUserBirthday = setUserBirthday;
