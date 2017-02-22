@@ -1,38 +1,25 @@
+"use strict";
+
 const express = require('express');
 const bodyParser = require('body-parser');
+const passport = require('passport');
+const FacebookStrategy = require('passport').Strategy;
 const app = express();
+const routes = require('./routes/index');
+const webhookRoutes = require('./routes/webhooks');
 const port = process.env.PORT || 3000;
+const database = require("./database")
 
+// Configure json parsing.
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(passport.initialize());
 
-let receivedUpdates = 0;
-let lastReceivedUpdates = [];
-
-app.get('/', (req, res) => {
-  res.setHeader('Content-Type', 'application/json');
-  res.send(JSON.stringify(lastReceivedUpdates, null, 2));
-});
-
-app.get('/facebook', (req, res) => {
-  if (
-    req.query['hub.mode'] === 'subscribe' &&
-    req.query['hub.verify_token'] === 'token'
-  ) {
-    res.send(req.query['hub.challenge']);
-  }
-  else {
-    res.sendStatus(400);
-  }
-});
-
-app.post('/facebook', (req, res) => {
-  // do stuff with the update
-  receivedUpdates += 1;
-  lastReceivedUpdates.push(req.body);
-  res.sendStatus(200);
-});
+// Set up routes.
+app.use('/', routes);
+app.use('/webhooks', webhookRoutes);
 
 // Start the server.
 app.listen(port, () => {
-  console.log("Running on localhost:" + port);
+  console.log('Running on localhost:' + port);
 });
