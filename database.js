@@ -70,6 +70,7 @@ function findUser(facebookUid, callback) {
 }
 function findOrCreateUser(name, facebookUid, token, callback) {
   findUser(facebookUid, (err, users) => {
+    console.log(users);
     if (err && callback) {
       return callback(err, users);
     }
