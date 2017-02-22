@@ -4,9 +4,10 @@ const FacebookStrategy = require('passport-facebook').Strategy;
 const database = require("../database.js");
 
 // Facebook app info.
-const facebookAppId = process.env.FB_APP_ID || '373335136385913';
-const facebookAppSecret = process.env.FB_APP_SECRET || 'c9cb9e46a67253fa8988d1cbd6fc04ce';
-const facebookCallbackUrl = process.env.FB_CALLBACK_URL || 'http://localhost:3000/auth/facebook/callback';
+const facebookAppInfo = require('../facebook/app-info');
+const facebookAppId = facebookAppInfo.appId;
+const facebookAppSecret = facebookAppInfo.appSecret;
+const facebookCallbackUrl = facebookAppInfo.callUrl;
 
 // Configure passport.
 passport.use(new FacebookStrategy({
