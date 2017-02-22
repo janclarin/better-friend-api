@@ -117,6 +117,7 @@ let handleError = function (err, callback) {
 
 function getAuthTokenForUser(facebookUid, callback) {
    findUser(facebookUid, (err, users) => {
+     console.log('Looking for user with ID: ' + facebookUid);
      if(err || users.length == 0){
        return noUserFound(err, users, callback);
      }
