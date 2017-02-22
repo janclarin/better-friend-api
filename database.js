@@ -60,7 +60,6 @@ function saveNewUser(name, facebookUid, token, callback) {
 
 function findUser(facebookUid, callback) {
   User.find({facebookUid : facebookUid}, (err, res) => {
-    console.log(res);
     if(callback){
       callback(err, res);
     } else {
