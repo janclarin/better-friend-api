@@ -49,8 +49,8 @@ function shouldAutoReplyToFeed(userId, callback) {
       console.log(err);
       return;
     }
-    console.log('Looking for birthday settings: ' + userId);
     const birthdaySettings = res.birthdaySettings;
+    console.log('bday:' + birthdaySettings);
     callback(err, birthdaySettings.isEnabled);
   });
 }
