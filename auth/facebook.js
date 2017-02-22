@@ -1,7 +1,6 @@
 const express = require('express');
 const passport = require('passport');
 const FacebookStrategy = require('passport-facebook').Strategy;
-const router = express.Router();
 const database = require("../database.js");
 
 // Facebook app info.
