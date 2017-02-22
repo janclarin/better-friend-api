@@ -49,6 +49,9 @@ function shouldAutoReplyToFeed(userId, callback) {
       console.log(err);
       return;
     }
+    if(res.length == 0){
+      return callback(err, false)
+    }
     const birthdaySettings = res[0].birthdaySettings;
     console.log('bday:' + birthdaySettings);
     callback(err, birthdaySettings.isEnabled);
@@ -110,7 +113,7 @@ function replyToUserLastFeedItem(userId) {
           const feedItemMessage = feedItem.message;
           const responseMessage = isHappyBirthdayMessage(feedItemMessage)
             ? 'Thank you, ' + feedItemUserFirstName + '!'
-            : getRandomResponse() ;
+            : getRandomResponse() + " " ;
 
           graphApi.commentOnFeedItem(feedItemId, accessToken, responseMessage, (err, commentId) => {
             if (err) {
