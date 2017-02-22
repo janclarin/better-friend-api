@@ -9,6 +9,12 @@ function getBirthday(userId, userAccessToken, callback) {
   });
 }
 
+function getFeedItem(feedItemId, userAccessToken, callback) {
+  fbgraph.get(feedItemId + '?access_token=' + userAccessToken, (err, res) => {
+    callback(err, res);
+  });
+}
+
 function getLastFeedItemId(userId, userAccessToken, callback) {
   console.log("Getting last feed item with access token: " + userAccessToken);
   fbgraph.get(userId + '/feed?limit=1&access_token=' + userAccessToken, (err, res) => {
@@ -26,5 +32,6 @@ function commentOnFeedItem(feedItemId, userAccessToken, comment, callback) {
 }
 
 exports.getBirthday = getBirthday;
+exports.getFeedItem = getFeedItem;
 exports.getLastFeedItemId = getLastFeedItemId;
 exports.commentOnFeedItem = commentOnFeedItem;
