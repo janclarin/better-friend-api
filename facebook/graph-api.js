@@ -26,6 +26,10 @@ function getLastFeedItemId(userId, userAccessToken, callback) {
 function commentOnFeedItem(feedItemId, userAccessToken, comment, callback) {
   const postUrl = feedItemId + '/comments?access_token=' + userAccessToken + '&message=' + comment;
   fbgraph.post(postUrl, (err, res) => {
+    if (err){
+      console.log(err);
+      return callback(err, null)
+    }
     const newCommentId = res.id;
     callback(err, newCommentId);
   });
