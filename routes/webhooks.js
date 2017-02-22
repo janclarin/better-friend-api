@@ -93,7 +93,7 @@ function shouldAutoReplyToFeed(userId, callback) {
 }
 
 function shouldIncludeEmoji(userID, callback) {
-  database.findUser(userId, (err, res) => {
+  database.findUser(userID, (err, res) => {
     if (err) {
       console.log(err);
       return;
