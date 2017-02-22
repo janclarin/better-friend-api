@@ -4,11 +4,17 @@ const database = require('../database');
 const graphApi = require('../facebook/graph-api');
 
 let lastReceivedUpdates = [];
+let lastReceivedUpdatesPages = [];
 let lastRepliedToFeedIds = [];
 
 router.get('/check', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify(lastReceivedUpdates, null, 2));
+});
+
+router.get('/check/pages', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(JSON.stringify(lastReceivedUpdatesPages, null, 2));
 });
 
 // User page webhooks.
@@ -59,14 +65,18 @@ router.get('/facebook/pages', (req, res) => {
 
 router.post('/facebook/pages', (req, res) => {
   let entry = req.body.entry[0];
-  let pageId = entry.id;
+  let userId = entry.id;
   let changedFields = entry.changed_fields;
 
+  console.log('pages stuff');
+  console.log(req.body);
+  console.log(entry);
+
   // Add received webhook entry to list.
-  lastReceivedUpdates.push(req.body);
+  lastReceivedUpdatesPages.push(req.body);
 
   if (changedFields.indexOf('feed') > -1) {
-    replyToUserLastFeedItem(pageId, getRandomBusinessResponse());
+    replyToUserLastFeedItem(userId, getRandomBusinessResponse());
   }
 
   res.sendStatus(200);
