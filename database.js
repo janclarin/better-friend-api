@@ -89,7 +89,7 @@ function findOrCreateUser(name, facebookUid, token, callback) {
   });
 }
 
-let noUserFound = function (err, users, callback) {
+let noUserFound = function (err, facebookUid, users, callback) {
   if(callback){
     if(err){
       return callback(err, null);
@@ -118,7 +118,7 @@ let handleError = function (err, callback) {
 function getAuthTokenForUser(facebookUid, callback) {
    findUser(facebookUid, (err, users) => {
      if(err || users.length == 0){
-       return noUserFound(err, users, callback);
+       return noUserFound(err, facebookUid, users, callback);
      }
      if(callback){
        return callback(err, users[0].accessToken);
@@ -130,7 +130,7 @@ function getAuthTokenForUser(facebookUid, callback) {
 function setUserBirthday(facebookUid, birthday, callback) {
   findUser(facebookUid, (err, users) => {
     if(err || users.length == 0){
-      return noUserFound(err, users, callback);
+      return noUserFound(err, facebookUid, users, callback);
     }
     let user = users[0];
     user.birthday = birthday;
