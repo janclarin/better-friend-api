@@ -8,7 +8,7 @@ const facebookDialogCallbackUrl = process.env.FB_DIALOG_CALLBACK || 'http://loca
 const dialogRedirectUrl =
   'https://www.facebook.com/dialog/feed?app_id=' + facebookAppId +
   '&display=popup&amp;caption=An%20example%20caption' +
-  '&link=http%3A%2F%2Fcalgaryhacks.com2F' +
+  '&link=http%3A%2F%2Fcalgaryhacks.com' +
   '&from=100015522361747&to=100015418719862' +
   '&redirect_uri=' + facebookDialogCallbackUrl;
 
