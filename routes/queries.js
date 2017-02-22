@@ -13,4 +13,8 @@ router.route('/:user_id/events')
   .get(controller.getEventSettings)
   .put(controller.updateEventSettings);
 
+router.route("/:user_id/pages")
+  .get(controller.getPageSettings)
+  .put(controller.updatePageSettings);
+
 module.exports = router;

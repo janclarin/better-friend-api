@@ -147,4 +147,48 @@ exports.updateEventSettings = function(req, res){
   });
 };
 
+exports.getPageSettings = function (req, res) {
+  let user_id = req.params.user_id;
+
+  database.findUser(user_id, (err, users) => {
+
+    if(err || users.length == 0){
+      return handleNoUserFound(err, users, res);
+    }
+
+    let user = users[0];
+    return res.status(200).json({"data": {
+      "id": user.facebookUid,
+      "name": user.name,
+      "pagesEnabled": user.pagesEnabled
+    }});
+
+
+  });
+};
+
+exports.updatePageSettings = function (req, res) {
+  let user_id = req.params.user_id;
+  database.findUser(user_id, (err, users) => {
+
+    if(err || users.length == 0){
+      return handleNoUserFound(err, users, res);
+    }
+
+    let user = users[0];
+    user.pagesEnabled = req.body.data.pagesEnabled;
+    return user.save((err, update) => {
+      if(err){
+        return res.status(500).json({
+          "errors": [{
+            "status": "500",
+            "title": "Update Failed",
+            "detail": "Update Failed"
+          }]
+        });
+      }
+      return res.status(200).json({"status": "success"});
+    });
+  });
+};
 
