@@ -173,36 +173,42 @@ function replyToPageLastFeedItem(pageId) {
   const sandraUserId = '112064199317537';
   database.findUser(sandraUserId, (err, res) => {
     const pageOwnerAccessToken = res.accessToken;
-    graphApi.getLastFeedItemId(pageId, pageOwnerAccessToken, (err, feedItemId) => {
-      if (err) {
-        console.log(err);
-        return;
-      }
-      console.log("Last feed item " + feedItemId);
 
-      if (!wasRepliedTo(feedItemId)) {
-        // Get last feed item to check if birthday message.
-        graphApi.getFeedItem(feedItemId, accessToken, (err, feedItem) => {
-          if (err) {
-            console.log(err);
-            return;
-          }
+    console.log('Owner access token: ' + pageOwnerAccessToken);
+    graphApi.getPageAccessToken(pageId, pageOwnerAccessToken, (err, pageAccessToken) => {
 
-          // Add feed item to replied to list.
-          addToLastRepliedToFeedIds(feedItemId);
+      console.log('Page access token: ' + pageAccessToken);
+      graphApi.getLastFeedItemId(pageId, pageAccessToken, (err, feedItemId) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        console.log("Last feed item " + feedItemId);
 
-          const responseMessage = getRandomBusinessResponse();
-          graphApi.commentOnFeedItem(feedItemId, accessToken, responseMessage, (err, commentId) => {
+        if (!wasRepliedTo(feedItemId)) {
+          // Get last feed item to check if birthday message.
+          graphApi.getFeedItem(feedItemId, pageAccessToken, (err, feedItem) => {
             if (err) {
               console.log(err);
               return;
             }
-            console.log("Auto-commented on page feed item " + feedItemId);
-          });
-        });
-      }
-    });
 
+            // Add feed item to replied to list.
+            addToLastRepliedToFeedIds(feedItemId);
+
+            const responseMessage = getRandomBusinessResponse();
+            graphApi.commentOnFeedItem(feedItemId, pageAccessToken, responseMessage, (err, commentId) => {
+              if (err) {
+                console.log(err);
+                return;
+              }
+              console.log("Auto-commented on page feed item " + feedItemId);
+            });
+          });
+        }
+      });
+
+    });
   });
 }
 
