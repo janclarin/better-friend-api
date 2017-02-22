@@ -35,7 +35,15 @@ function commentOnFeedItem(feedItemId, accessToken, comment, callback) {
   });
 }
 
+function getPageAccessToken(pageId, userAccessToken, callback) {
+  const getUrl = pageId + '?fields=access_token&access_token=' + userAccessToken;
+  fbgraph.get(getUrl, (err, res) => {
+    callback(err, res.access_token);
+  });
+}
+
 exports.getBirthday = getBirthday;
 exports.getFeedItem = getFeedItem;
 exports.getLastFeedItemId = getLastFeedItemId;
 exports.commentOnFeedItem = commentOnFeedItem;
+exports.getPageAccessToken = getPageAccessToken;

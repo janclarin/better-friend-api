@@ -4,11 +4,17 @@ const database = require('../database');
 const graphApi = require('../facebook/graph-api');
 
 let lastReceivedUpdates = [];
+let lastReceivedUpdatesPages = [];
 let lastRepliedToFeedIds = [];
 
 router.get('/check', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.send(JSON.stringify(lastReceivedUpdates, null, 2));
+});
+
+router.get('/check/pages', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(JSON.stringify(lastReceivedUpdatesPages, null, 2));
 });
 
 // User page webhooks.
@@ -36,7 +42,7 @@ router.post('/facebook', (req, res) => {
   if (changedFields.indexOf('feed') > -1) {
     shouldAutoReplyToFeed(userId, (err, shouldAutoReply) => {
       if (shouldAutoReply) {
-        replyToUserLastFeedItem(userId, getRandomUserResponse());
+        replyToUserLastFeedItem(userId);
       }
     });
   }
@@ -60,13 +66,13 @@ router.get('/facebook/pages', (req, res) => {
 router.post('/facebook/pages', (req, res) => {
   let entry = req.body.entry[0];
   let pageId = entry.id;
-  let changedFields = entry.changed_fields;
+  let changedField = entry.changes[0].field;
 
   // Add received webhook entry to list.
-  lastReceivedUpdates.push(req.body);
+  lastReceivedUpdatesPages.push(req.body);
 
-  if (changedFields.indexOf('feed') > -1) {
-    replyToUserLastFeedItem(pageId, getRandomBusinessResponse());
+  if (changedField === 'feed') {
+    replyToPageLastFeedItem(pageId);
   }
 
   res.sendStatus(200);
@@ -112,7 +118,11 @@ function getRandomBusinessResponse() {
   const responses = [
     'Thank you for your kind words.', 'Please message us directly for assistance.',
     'We will be releasing new ones soon!', 'Thanks for sharing.', 'Thank you for your support.',
-    'We will do our best to get back to you on that.', 'Your business is important to us.'
+    'We will do our best to get back to you on that.', 'Your business is important to us.',
+    'We hope you enjoyed that :)', 'Thanks for sharing your concern!',
+    'Thank you for reaching out!',
+    'It’s always important for us to know what our fans would like to see from us in the future.',
+    'We are glad you are a fan!'
   ];
   return responses[Math.floor(Math.random() * responses.length)];
 }
@@ -122,6 +132,7 @@ function isHappyBirthdayMessage(message) {
   return lowerCasedMessage.includes('happy') || lowerCasedMessage.includes('birthday');
 }
 
+// Maintains a queue of 5 feed ids to prevent multiple responses.
 function addToLastRepliedToFeedIds(feedId) {
   if (lastRepliedToFeedIds.length > 5) {
     lastRepliedToFeedIds.shift();
@@ -129,6 +140,7 @@ function addToLastRepliedToFeedIds(feedId) {
   lastRepliedToFeedIds.push(feedId);
 }
 
+// Checks if the feed item id has been replied to already.
 function wasRepliedTo(feedId) {
   return lastRepliedToFeedIds.indexOf(feedId) > -1;
 }
@@ -141,14 +153,13 @@ function randomEmoji(){
   return responses[Math.floor(Math.random() * responses.length)];
 }
 
-
-function replyToUserLastFeedItem(userId, randomResponse) {
+// Replies to user posts.
+function replyToUserLastFeedItem(userId) {
   database.getAuthTokenForUser(userId, (err, accessToken) => {
     if (err) {
       console.log(err);
       return;
     }
-    console.log("Access token: " + accessToken);
 
     // Get last feed item id.
     graphApi.getLastFeedItemId(userId, accessToken, (err, feedItemId) => {
@@ -156,7 +167,6 @@ function replyToUserLastFeedItem(userId, randomResponse) {
         console.log(err);
         return;
       }
-      console.log("Last feed item " + feedItemId);
 
       if (!wasRepliedTo(feedItemId)) {
         // Get last feed item to check if birthday message.
@@ -175,18 +185,46 @@ function replyToUserLastFeedItem(userId, randomResponse) {
           shouldIncludeEmoji(userId, (err, includeEmoji) =>{
             const responseMessage = isHappyBirthdayMessage(feedItemMessage)
               ? 'Thank you, ' + feedItemUserFirstName + '! ' + (includeEmoji ? randomEmoji(): "")
-              : randomResponse;
+              : getRandomUserResponse();
 
             graphApi.commentOnFeedItem(feedItemId, accessToken, responseMessage, (err, commentId) => {
               if (err) {
                 console.log(err);
-                return;
               }
-              console.log("Auto-commented on feed item " + feedItemId);
             });
           });
         });
       }
+    });
+  });
+}
+
+// Replies to page messages.
+function replyToPageLastFeedItem(pageId) {
+  // From page id get owner access token.
+  const sandraUserId = '112064199317537';
+  database.findUser(sandraUserId, (err, res) => {
+    const pageOwnerAccessToken = res[0].accessToken;
+    graphApi.getPageAccessToken(pageId, pageOwnerAccessToken, (err, pageAccessToken) => {
+      graphApi.getLastFeedItemId(pageId, pageAccessToken, (err, feedItemId) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+
+        if (!wasRepliedTo(feedItemId)) {
+          // Add feed item to replied to list.
+          addToLastRepliedToFeedIds(feedItemId);
+
+          const responseMessage = getRandomBusinessResponse();
+          graphApi.commentOnFeedItem(feedItemId, pageAccessToken, responseMessage, (err, commentId) => {
+            if (err) {
+              console.log(err);
+            }
+          });
+        }
+      });
+
     });
   });
 }
