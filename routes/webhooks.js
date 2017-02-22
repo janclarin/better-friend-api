@@ -55,6 +55,14 @@ function shouldAutoReplyToFeed(userId, callback) {
   });
 }
 
+function getRandomResponse() {
+  const responses = [
+    'Cool story!', 'Neat!', 'Lol, so true.', 'Thanks for sharing!',
+    'Wow, I was just about to send to you!', 'That is SO cool!'
+  ];
+  return responses[Math.floor(Math.random() * responses.length)];
+}
+
 function isHappyBirthdayMessage(message) {
   const lowerCasedMessage = message.toLowerCase();
   return lowerCasedMessage.includes('happy') || lowerCasedMessage.includes('birthday');
@@ -102,7 +110,7 @@ function replyToUserLastFeedItem(userId) {
           const feedItemMessage = feedItem.message;
           const responseMessage = isHappyBirthdayMessage(feedItemMessage)
             ? 'Thank you, ' + feedItemUserFirstName + '!'
-            : 'Cool story!';
+            : getRandomResponse();
 
           graphApi.commentOnFeedItem(feedItemId, accessToken, responseMessage, (err, commentId) => {
             if (err) {
