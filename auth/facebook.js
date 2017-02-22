@@ -17,6 +17,7 @@ passport.use(new FacebookStrategy({
   (accessToken, refreshToken, profile, callback) => {
     console.log(accessToken);
     console.log(profile);
+    return callback(null, null);
   }
 ));
 
