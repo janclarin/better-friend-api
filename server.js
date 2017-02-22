@@ -3,7 +3,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const passport = require('passport');
-const FacebookStrategy = require('passport').Strategy;
 const app = express();
 const routes = require('./routes/index');
 const port = process.env.PORT || 3000;
