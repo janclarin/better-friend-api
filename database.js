@@ -21,6 +21,7 @@ let userSchema = mongoose.Schema({
   facebookUid : {type : String, unique : true, dropDups : true, required : true },
   accessToken: {type : String, required : true},
   birthday : {type : String},
+  pagesEnabled : {type: Boolean, default : false},
   birthdaySettings : {type : birthdaySchema, default : birthdaySchema, required : true},
   eventSettings : {type : eventSchema, default : eventSchema, required : true}
 });
