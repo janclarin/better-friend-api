@@ -28,9 +28,17 @@ router.post('/facebook', (req, res) => {
 
   database.getAuthTokenForUser(userId, (err, accessToken) => {
     console.log("Access token: " + accessToken);
-    graphApi.getLastFeedItemId(userId, accessToken, (feedItemId) => {
+    graphApi.getLastFeedItemId(userId, accessToken, (err, feedItemId) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
       console.log("Last feed item " + feedItemId);
-      graphApi.commentOnFeedItem(feedItemId, accessToken, commentMessage, (commentId) => {
+      graphApi.commentOnFeedItem(feedItemId, accessToken, commentMessage, (err, commentId) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
         console.log("Auto-commented on feed item " + feedItemId);
       });
     });
