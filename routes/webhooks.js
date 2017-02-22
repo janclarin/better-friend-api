@@ -65,8 +65,8 @@ router.get('/facebook/pages', (req, res) => {
 
 router.post('/facebook/pages', (req, res) => {
   let entry = req.body.entry[0];
-  let userId = entry.id;
-  let changedFields = entry.changed_fields;
+  let pageId = entry.id;
+  let changedField = entry.changes.field;
 
   console.log('pages stuff');
   console.log(req.body);
@@ -75,8 +75,8 @@ router.post('/facebook/pages', (req, res) => {
   // Add received webhook entry to list.
   lastReceivedUpdatesPages.push(req.body);
 
-  if (changedFields.indexOf('feed') > -1) {
-    replyToUserLastFeedItem(userId, getRandomBusinessResponse());
+  if (changedField === 'feed') {
+    replyToUserLastFeedItem(pageId, getRandomBusinessResponse());
   }
 
   res.sendStatus(200);
