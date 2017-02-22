@@ -27,8 +27,12 @@ router.post('/facebook', (req, res) => {
   let userId = entry.id;
   let changedFields = entry.changed_fields;
 
+  // do stuff with the update
+  lastReceivedUpdates.push(req.body);
+  res.sendStatus(200);
+
   // Auto-comment if it was a feed update.
-  if (changedFields.indexOf('feed') !== -1) {
+  if (changedFields.indexOf('feed') > -1) {
     let commentMessage = 'Cool story!';
     database.getAuthTokenForUser(userId, (err, accessToken) => {
       if (err) {
@@ -52,10 +56,6 @@ router.post('/facebook', (req, res) => {
       });
     });
   }
-
-  // do stuff with the update
-  lastReceivedUpdates.push(req.body);
-  res.sendStatus(200);
 });
 
 module.exports = router;
