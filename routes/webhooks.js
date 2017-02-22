@@ -26,7 +26,7 @@ router.post('/facebook', (req, res) => {
   let userId = req.body['entry.id'];
   let commentMessage = 'Very nice!';
 
-  database.getTokenForAuthUser(userId, (accessToken) => {
+  database.getAuthTokenForUser(userId, (accessToken) => {
     graphApi.getLastFeedItemId(userId, accessToken, (feedItemId) => {
       graphApi.commentOnFeedItem(feedItemId, accessToken, commentMessage, (commentId) => {});
     });
