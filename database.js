@@ -7,7 +7,8 @@ mongoose.connect(DATABASE_LOC);
 let userSchema = mongoose.Schema({
   name: {type : String, required : true},
   facebookUid : {type : String, unique : true, dropDups : true, required : true },
-  accessToken: {type : String, required : true}
+  accessToken: {type : String, required : true},
+  birthday : {type : String}
 });
 
 let User = mongoose.model('User', userSchema);
@@ -53,14 +54,16 @@ function findUser(facebookUid, callback) {
   });
 
 }
-
 function findOrCreateUser(name, facebookUid, token, callback) {
   findUser(facebookUid, (err, users) => {
     if (err && callback) {
       return callback(err, users);
     }
-    if(users.length > 0){
+    if(callback && users.length > 0){
       return callback(err, users)
+    }
+    if(users.length > 0){
+      return users[0];
     }
     let newUser = new User({name : name, facebookUid : facebookUid, accessToken : token});
     newUser.save((err, res) => {
@@ -72,7 +75,65 @@ function findOrCreateUser(name, facebookUid, token, callback) {
   });
 }
 
+let noUserFound = function (err, callback) {
+  if(callback){
+    if(err){
+      return callback(err, null);
+    }
+    if(users.length == 0){
+      return callback(new Error("No user found for id " + facebookUid), null);
+    }
+  }
+  else{
+    if(err){
+      return err;
+    }
+    if(users.length == 0){
+      return null;
+    }
+  }
+};
+
+let handleError = function (err, callback) {
+  if(callback){
+    return callback(err, null);
+  }
+  return null;
+};
+
+function getAuthTokenForUser(facebookUid, callback) {
+   findUser(facebookUid, (err, users) => {
+     if(err || users.length == 0){
+       return noUserFound(err, callback);
+     }
+     if(callback){
+       return callback(err, users[0].accessToken);
+     }
+     return users[0].accessToken;
+   });
+}
+
+function setUserBirthday(facebookUid, birthday, callback) {
+  findUser(facebookUid, (err, users) => {
+    if(err || users.length == 0){
+      return noUserFound(err, callback);
+    }
+    let user = users[0];
+    user.birthday = birthday;
+    user.save((err, res) =>{
+      if(err){
+        return handleError(err, callback);
+      }
+      if(callback){
+        return callback(err, res);
+      }
+      return res;
+    });
+  });
+}
 
 this.saveNewUser = saveNewUser;
 this.findUser = findUser;
 this.findOrCreateUser = findOrCreateUser;
+this.getAuthTokenForUser = getAuthTokenForUser;
+this.setUserBirthday = setUserBirthday;
