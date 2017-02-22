@@ -32,7 +32,7 @@ function commentOnFeedItem(feedItemId, accessToken, comment, callback) {
 }
 
 function getPageAccessToken(pageId, userAccessToken, callback) {
-  fbgraph.get(pageId + '?access_token=' + userAccessToken, (err, res) => {
+  fbgraph.get(pageId + '?fields=access_token&access_token=' + userAccessToken, (err, res) => {
     callback(res.access_token);
   });
 }
