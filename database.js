@@ -60,6 +60,7 @@ function saveNewUser(name, facebookUid, token, callback) {
 
 function findUser(facebookUid, callback) {
   User.find({facebookUid : facebookUid}, (err, res) => {
+    console.log(res);
     if(callback){
       callback(err, res);
     } else {
@@ -70,7 +71,6 @@ function findUser(facebookUid, callback) {
 }
 function findOrCreateUser(name, facebookUid, token, callback) {
   findUser(facebookUid, (err, users) => {
-    console.log(users);
     if (err && callback) {
       return callback(err, users);
     }
