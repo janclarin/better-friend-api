@@ -104,7 +104,11 @@ function getRandomBusinessResponse() {
   const responses = [
     'Thank you for your kind words.', 'Please message us directly for assistance.',
     'We will be releasing new ones soon!', 'Thanks for sharing.', 'Thank you for your support.',
-    'We will do our best to get back to you on that.', 'Your business is important to us.'
+    'We will do our best to get back to you on that.', 'Your business is important to us.',
+    'We hope you enjoyed that :)', 'Thanks for sharing your concern!',
+    'Thank you for reaching out!',
+    'It’s always important for us to know what our fans would like to see from us in the future.',
+    'We are glad you are a fan!'
   ];
   return responses[Math.floor(Math.random() * responses.length)];
 }
