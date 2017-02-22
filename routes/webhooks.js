@@ -42,7 +42,7 @@ router.post('/facebook', (req, res) => {
   if (changedFields.indexOf('feed') > -1) {
     shouldAutoReplyToFeed(userId, (err, shouldAutoReply) => {
       if (shouldAutoReply) {
-        replyToUserLastFeedItem(userId, getRandomUserResponse());
+        replyToUserLastFeedItem(userId);
       }
     });
   }
@@ -114,6 +114,7 @@ function isHappyBirthdayMessage(message) {
   return lowerCasedMessage.includes('happy') || lowerCasedMessage.includes('birthday');
 }
 
+// Maintains a queue of 5 feed ids to prevent multiple responses.
 function addToLastRepliedToFeedIds(feedId) {
   if (lastRepliedToFeedIds.length > 5) {
     lastRepliedToFeedIds.shift();
@@ -121,17 +122,18 @@ function addToLastRepliedToFeedIds(feedId) {
   lastRepliedToFeedIds.push(feedId);
 }
 
+// Checks if the feed item id has been replied to already.
 function wasRepliedTo(feedId) {
   return lastRepliedToFeedIds.indexOf(feedId) > -1;
 }
 
-function replyToUserLastFeedItem(userId, randomResponse) {
+// Replies to user posts.
+function replyToUserLastFeedItem(userId) {
   database.getAuthTokenForUser(userId, (err, accessToken) => {
     if (err) {
       console.log(err);
       return;
     }
-    console.log("Access token: " + accessToken);
 
     // Get last feed item id.
     graphApi.getLastFeedItemId(userId, accessToken, (err, feedItemId) => {
@@ -139,7 +141,6 @@ function replyToUserLastFeedItem(userId, randomResponse) {
         console.log(err);
         return;
       }
-      console.log("Last feed item " + feedItemId);
 
       if (!wasRepliedTo(feedItemId)) {
         // Get last feed item to check if birthday message.
@@ -156,14 +157,12 @@ function replyToUserLastFeedItem(userId, randomResponse) {
           const feedItemMessage = feedItem.message;
           const responseMessage = isHappyBirthdayMessage(feedItemMessage)
             ? 'Thank you, ' + feedItemUserFirstName + '!'
-            : randomResponse;
+            : getRandomUserResponse();
 
           graphApi.commentOnFeedItem(feedItemId, accessToken, responseMessage, (err, commentId) => {
             if (err) {
               console.log(err);
-              return;
             }
-            console.log("Auto-commented on feed item " + feedItemId);
           });
         });
       }
@@ -171,22 +170,18 @@ function replyToUserLastFeedItem(userId, randomResponse) {
   });
 }
 
+// Replies to page messages.
 function replyToPageLastFeedItem(pageId) {
   // From page id get owner access token.
   const sandraUserId = '112064199317537';
   database.findUser(sandraUserId, (err, res) => {
     const pageOwnerAccessToken = res[0].accessToken;
-
-    console.log('Owner access token: ' + pageOwnerAccessToken);
     graphApi.getPageAccessToken(pageId, pageOwnerAccessToken, (err, pageAccessToken) => {
-
-      console.log('Page access token: ' + pageAccessToken);
       graphApi.getLastFeedItemId(pageId, pageAccessToken, (err, feedItemId) => {
         if (err) {
           console.log(err);
           return;
         }
-        console.log("Last page feed item " + feedItemId);
 
         if (!wasRepliedTo(feedItemId)) {
           // Add feed item to replied to list.
@@ -196,9 +191,7 @@ function replyToPageLastFeedItem(pageId) {
           graphApi.commentOnFeedItem(feedItemId, pageAccessToken, responseMessage, (err, commentId) => {
             if (err) {
               console.log(err);
-              return;
             }
-            console.log("Auto-commented on page feed item " + feedItemId);
           });
         }
       });
