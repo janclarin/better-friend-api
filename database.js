@@ -22,9 +22,24 @@ connection.once('open', () => {
 
 
 function saveNewUser(name, facebookUid, token, callback) {
-  let newUser = new User({name : name, facebookUid : facebookUid, token : token});
-  newUser.save((err, res) => {
-    callback(err, res);
+  retreiveUser(facebookUid, (err, users) => {
+    if (err && callback) {
+      return callback(err, users);
+    }
+    if(users.length > 0){
+      let error = new Error("A user with the name " + name + " already exists");
+      if(callback){
+        callback(error);
+      }
+      return
+    }
+    let newUser = new User({name : name, facebookUid : facebookUid, token : token});
+    newUser.save((err, res) => {
+      if(callback){
+        return callback(err, res);
+      }
+      return res;
+    });
   });
 }
 
