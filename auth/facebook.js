@@ -15,7 +15,8 @@ passport.use(new FacebookStrategy({
     callbackURL: facebookCallbackUrl
   },
   (accessToken, refreshToken, profile, callback) => {
-    // TODO: Save user info here.
+    console.log(accessToken);
+    console.log(profile);
   }
 ));
 
