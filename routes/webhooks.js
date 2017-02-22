@@ -66,9 +66,7 @@ router.get('/facebook/pages', (req, res) => {
 router.post('/facebook/pages', (req, res) => {
   let entry = req.body.entry[0];
   let pageId = entry.id;
-  console.log('fdasdfasdfadsf');
   let changedField = entry.changes[0].field;
-  console.log(changedField);
 
   // Add received webhook entry to list.
   lastReceivedUpdatesPages.push(req.body);
@@ -174,7 +172,7 @@ function replyToPageLastFeedItem(pageId) {
   // From page id get owner access token.
   const sandraUserId = '112064199317537';
   database.findUser(sandraUserId, (err, res) => {
-    const pageOwnerAccessToken = res.accessToken;
+    const pageOwnerAccessToken = res[0].accessToken;
 
     console.log('Owner access token: ' + pageOwnerAccessToken);
     graphApi.getPageAccessToken(pageId, pageOwnerAccessToken, (err, pageAccessToken) => {
