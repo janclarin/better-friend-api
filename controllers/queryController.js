@@ -27,7 +27,7 @@ exports.getUserInfo = function (req, res) {
     let user = users[0];
     return res.status(200).json({"data": {
       "id": user.facebookUid,
-      //"birthday" : user.birthday,
+      "birthday" : user.birthday,
       "name": user.name
     }});
 

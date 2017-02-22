@@ -4,11 +4,19 @@ const mongoose = require('mongoose');
 
 mongoose.connect(DATABASE_LOC);
 
+
+let birthdaySchema = mongoose.Schema({
+  isEnabled : {type : Boolean, required : true, default : false},
+  callByName : {type : Boolean, required : true, default : false},
+  useEmoji : {type : Boolean, required : true, default : false}
+});
+
 let userSchema = mongoose.Schema({
   name: {type : String, required : true},
   facebookUid : {type : String, unique : true, dropDups : true, required : true },
   accessToken: {type : String, required : true},
-  birthday : {type : String}
+  birthday : {type : String},
+  birthdaySettings : {type : birthdaySchema, default : birthdaySchema, required : true}
 });
 
 let User = mongoose.model('User', userSchema);
