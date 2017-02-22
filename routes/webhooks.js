@@ -4,6 +4,7 @@ const database = require('../database');
 const graphApi = require('../facebook/graph-api');
 
 let lastReceivedUpdates = [];
+let lastRepliedToFeedIds = [];
 
 router.get('/check', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
@@ -43,6 +44,17 @@ function isHappyBirthdayMessage(message) {
   return lowerCasedMessage.includes('happy') || lowerCasedMessage.includes('birthday');
 }
 
+function addToLastRepliedToFeedIds(feedId) {
+  if (lastRepliedToFeedIds.length > 5) {
+    lastRepliedToFeedIds.shift();
+  }
+  lastRepliedToFeedIds.push(feedId);
+}
+
+function wasRepliedTo(feedId) {
+  return lastRepliedToFeedIds.indexOf(feedId) > -1;
+}
+
 function replyToUserLastFeedItem(userId) {
   database.getAuthTokenForUser(userId, (err, accessToken) => {
     if (err) {
@@ -59,25 +71,30 @@ function replyToUserLastFeedItem(userId) {
       }
       console.log("Last feed item " + feedItemId);
 
-      // Get last feed item to check if birthday message.
-      graphApi.getFeedItem(feedItemId, accessToken, (err, feedItem) => {
-        if (err) {
-          console.log(err);
-          return;
-        }
-
-        const feedItemMessage = feedItem.message;
-        const responseMessage = isHappyBirthdayMessage(feedItemMessage) ? 'Thank you!' : 'Cool story!';
-        console.log(feedItemMessage);
-
-        graphApi.commentOnFeedItem(feedItemId, accessToken, responseMessage, (err, commentId) => {
+      if (!wasRepliedTo(feedItemId)) {
+        // Get last feed item to check if birthday message.
+        graphApi.getFeedItem(feedItemId, accessToken, (err, feedItem) => {
           if (err) {
             console.log(err);
             return;
           }
-          console.log("Auto-commented on feed item " + feedItemId);
+
+          // Add feed item to replied to list.
+          addToLastRepliedToFeedIds(feedItemId);
+
+          const feedItemMessage = feedItem.message;
+          const responseMessage = isHappyBirthdayMessage(feedItemMessage) ? 'Thank you!' : 'Cool story!';
+          console.log(feedItemMessage);
+
+          graphApi.commentOnFeedItem(feedItemId, accessToken, responseMessage, (err, commentId) => {
+            if (err) {
+              console.log(err);
+              return;
+            }
+            console.log("Auto-commented on feed item " + feedItemId);
+          });
         });
-      });
+      }
     });
   });
 }
