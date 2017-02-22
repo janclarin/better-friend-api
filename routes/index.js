@@ -7,9 +7,11 @@ router.get('/auth/facebook', passportFacebook.authenticate('facebook', {
     'public_profile',
     'publish_pages',
     'publish_actions',
+    'rsvp_event',
     'user_birthday',
     'user_events',
-    'user_posts'
+    'user_posts',
+    'user_status'
   ]
 }));
 
