@@ -110,7 +110,7 @@ function replyToUserLastFeedItem(userId) {
           const feedItemMessage = feedItem.message;
           const responseMessage = isHappyBirthdayMessage(feedItemMessage)
             ? 'Thank you, ' + feedItemUserFirstName + '!'
-            : getRandomResponse() + " \u2764\ufe0f" ;
+            : getRandomResponse() ;
 
           graphApi.commentOnFeedItem(feedItemId, accessToken, responseMessage, (err, commentId) => {
             if (err) {
