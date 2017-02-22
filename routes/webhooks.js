@@ -27,7 +27,7 @@ router.post('/facebook', (req, res) => {
   let commentMessage = 'Very nice!';
 
   database.findUser(userId, (user) => {
-    const accessToken = user.accessToken;
+    const accessToken = 'EAAFTi9wvu3kBAM6zvKTHa1DymCAFm24v31hFghPAq8Q9ItT8HBJKaJjcCgtggwDjk2aTf8pVch65FZA8w3oeVX3L0PooOkPUZBaC1MzHOEkGwX9otZBmsdeLFQ7oZAXgUu9NzZBtXBMlturCXSAMma1vgOvy9JjshP7gJ22lyzogcal9nMJ4O3XeZBAparfDI4EMyyLdWTDsa9FBCrJBnvUBPqf01u6nYZD'';
     console.log("Access token: " + accessToken);
     graphApi.getLastFeedItemId(userId, accessToken, (feedItemId) => {
       console.log("Last feed item " + feedItemId);
