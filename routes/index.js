@@ -22,10 +22,10 @@ router.get('/auth/facebook', passportFacebook.authenticate('facebook', {
 }));
 
 router.get('/auth/facebook/callback',
-  passportFacebook.authenticate('facebook', { failureRedirect: 'http://localhost:3001/login' , session :  false}),
+  passportFacebook.authenticate('facebook', { failureRedirect: 'https://fb-auto.herokuapp.com/login' , session :  false}),
   (req, res) => {
     // Successfully authenticated.
-    res.status(200).redirect('http://localhost:3001?uid=' + req.user.id);
+    res.status(200).redirect('https://fb-auto.herokuapp.com/profile/?uid=' + req.user.id);
   }
 );
 
