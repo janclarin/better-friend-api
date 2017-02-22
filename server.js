@@ -6,9 +6,10 @@ const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 
 let receivedUpdates = 0;
+let lastReceivedUpdate;
 
 app.get('/', (req, res) => {
-  res.send('hello world test');
+  res.send('hello world test ' + receivedUpdates + ' ' + lastReceivedUpdate);
 });
 
 app.get('/facebook', (req, res) => {
@@ -27,8 +28,7 @@ app.get('/facebook', (req, res) => {
 app.post('/facebook', (req, res) => {
   // do stuff with the update
   receivedUpdates += 1;
-  console.log(receivedUpdates);
-  console.log(req.body);
+  lastReceivedUpdate = req.body;
   res.sendStatus(200);
 });
 
