@@ -6,19 +6,19 @@ const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 
 let receivedUpdates = 0;
-let lastReceivedUpdate;
+let lastReceivedUpdates = [];
 
 app.get('/', (req, res) => {
-  res.send('hello world test ' + receivedUpdates + ' ' + lastReceivedUpdate);
+  res.setHeader('Content-Type', 'application/json');
+  res.send(JSON.stringify(lastReceivedUpdates, null, 2));
 });
 
 app.get('/facebook', (req, res) => {
   if (
-    req.query.hub &&
-    req.query.hub.mode === 'subscribe' &&
-    req.query.hub.verify_token === 'token'
+    req.query['hub.mode'] === 'subscribe' &&
+    req.query['hub.verify_token'] === 'token'
   ) {
-    res.sendStatus(req.query.hub.challenge);
+    res.send(req.query['hub.challenge']);
   }
   else {
     res.sendStatus(400);
@@ -28,7 +28,7 @@ app.get('/facebook', (req, res) => {
 app.post('/facebook', (req, res) => {
   // do stuff with the update
   receivedUpdates += 1;
-  lastReceivedUpdate = req.body;
+  lastReceivedUpdates.push(req.body);
   res.sendStatus(200);
 });
 
