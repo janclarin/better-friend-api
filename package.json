@@ -1,0 +1,30 @@
+{
+  "name": "fb-auto-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/janclarin/fb-auto-server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/janclarin/fb-auto-server/issues"
+  },
+  "homepage": "https://github.com/janclarin/fb-auto-server#readme",
+  "devDependencies": {
+    "express": "^4.14.1",
+    "nodemon": "^1.11.0"
+  },
+  "dependencies": {
+    "body-parser": "^1.16.1",
+    "express": "^4.14.1",
+    "mongodb": "^2.2.24",
+    "passport": "^0.3.2",
+    "passport-facebook": "^2.1.1"
+  }
+}
