@@ -27,9 +27,8 @@ router.post('/facebook', (req, res) => {
   let userId = entry.id;
   let changedFields = entry.changed_fields;
 
-  // do stuff with the update
+  // Add received webhook entry to list.
   lastReceivedUpdates.push(req.body);
-  res.sendStatus(200);
 
   // Auto-comment if it was a feed update.
   if (changedFields.indexOf('feed') > -1) {
@@ -56,6 +55,8 @@ router.post('/facebook', (req, res) => {
       });
     });
   }
+
+  res.sendStatus(200);
 });
 
 module.exports = router;
