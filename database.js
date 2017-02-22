@@ -7,7 +7,7 @@ mongoose.connect(DATABASE_LOC);
 let userSchema = mongoose.Schema({
   name: {type : String, required : true},
   facebookUid : {type : String, unique : true, dropDups : true, required : true },
-  token: {type : String, required : true}
+  accessToken: {type : String, required : true}
 });
 
 let User = mongoose.model('User', userSchema);
@@ -33,7 +33,7 @@ function saveNewUser(name, facebookUid, token, callback) {
       }
       return
     }
-    let newUser = new User({name : name, facebookUid : facebookUid, token : token});
+    let newUser = new User({name : name, facebookUid : facebookUid, accessToken : token});
     newUser.save((err, res) => {
       if(callback){
         return callback(err, res);
@@ -54,7 +54,25 @@ function retreiveUser(facebookUid, callback) {
 
 }
 
+function findOrCreateUser(name, facebookUid, token, callback) {
+  retreiveUser(facebookUid, (err, users) => {
+    if (err && callback) {
+      return callback(err, users);
+    }
+    if(users.length > 0){
+      return callback(err, users)
+    }
+    let newUser = new User({name : name, facebookUid : facebookUid, accessToken : token});
+    newUser.save((err, res) => {
+      if(callback){
+        return callback(err, res);
+      }
+      return res;
+    });
+  });
+}
 
 
 this.saveNewUser = saveNewUser;
 this.retreiveUser = retreiveUser;
+this.findOrCreateUser = findOrCreateUser;

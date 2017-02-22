@@ -20,8 +20,8 @@ router.get('/auth/facebook', passportFacebook.authenticate('facebook', {
   ]
 }));
 
-router.get('auth/facebook/callback',
-  passportFacebook.authenticate('facebook', { failureRedirect: '/auth/facebook' }),
+router.get('/auth/facebook/callback',
+  passportFacebook.authenticate('facebook', { failureRedirect: '/bad' , session :  false}),
   (req, res) => {
     // Successfully authenticated.
     res.redirect('/');

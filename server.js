@@ -7,7 +7,7 @@ const FacebookStrategy = require('passport').Strategy;
 const app = express();
 const routes = require('./routes/index');
 const port = process.env.PORT || 3000;
-const database = require("./database")
+const database = require("./database");
 
 
 // Configure json parsing.
