@@ -45,6 +45,10 @@ router.post('/facebook', (req, res) => {
 
 function shouldAutoReplyToFeed(userId, callback) {
   database.findUser(userId, (err, res) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
     const birthdaySettings = res.birthdaySettings;
     callback(err, birthdaySettings.isEnabled);
   });
