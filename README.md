@@ -44,8 +44,10 @@ an appropriate reply based on industry standards.
 
 ## Challenges we ran into
 We had a lot of trouble dealing with the limitations of the Facebook APIs and
-the large learning curve of React. As well, there were restrictions the 
-prevented us from allow
+the large learning curve of React. As well, there were restrictions that
+prevented us from allowing public Facebook accounts to work with the app. We
+would have needed to submit a request to Facebook to allow us to ask users for
+specific permissions that would allow us to post on their behalf.
 
 **Because we do not have authorization from Facebook to enable certain
 permissions needed to post on behalf of users, this currently only works with
